@@ -92,6 +92,8 @@ $(document).ready(function() {
         if (view === 'graphs')
             $('#filterDisplaySelect').trigger('change');
         if (view === 'flows') {
+            $('#filterAggregation input[name=bidirectional]').prop('disabled', false).removeClass('disabled').trigger('change')
+                .parent().prop('disabled', false).removeClass('disabled');
             $('#filterOutputSelection').prop('disabled', false).toggleClass('disabled', false);
             $('#customListOutputFormatValue').prop('disabled', false).toggleClass('disabled', false);
         }
@@ -288,6 +290,8 @@ $(document).ready(function() {
 
         $('#filterOutputSelection').prop('disabled', disabled).toggleClass('disabled', disabled);
         $('#customListOutputFormatValue').prop('disabled', disabled).toggleClass('disabled', disabled);
+        $('#filterAggregation input[name=bidirectional]').prop('disabled', true).addClass('disabled')
+            .parent().prop('disable', true).addClass('disabled');
     });
 
     /**
@@ -790,34 +794,28 @@ $(document).ready(function() {
      * @returns string
      */
     function parse_aggregation_fields() {
-        var $aggregation = $('#filterAggregation');
-        if ($aggregation.find('[name=bidirectional]:checked').length === 0) {
-            var validAggregations = ['proto', 'dstport', 'srcport', 'srcip', 'dstip'],
-                aggregate = '';
+        var aggregation = $('#filterAggregation');
+        var bidir = aggregation.find('[name=bidirectional]');
+        if (!bidir.prop('disabled') && bidir.prop('checked'))
+            return 'bidirectional';
 
-            $.each(validAggregations, function(id, val) {
-                if ($aggregation.find('[name=' + val + ']:checked').length > 0) {
-                    aggregate += (aggregate === '') ? val : ',' + val;
-                } else {
-                    var select = $aggregation.find('[name=' + val + ']').val();
-                    if (select === 'none') return;
-                    if (val === 'srcip') {
-                        var prefix = parseInt($aggregation.find('[name=srcipprefix]:visible').val()),
-                            srcprefix = (isNaN(prefix) || prefix === 'srcip') ? '' : '/' + prefix,
-                            srcip = select + srcprefix;
-                        aggregate += (aggregate === '') ? srcip : ',' + srcip;
-                    } else if (val === 'dstip') {
-                        var prefix = parseInt($aggregation.find('[name=dstipprefix]:visible').val()),
-                            dstprefix = (isNaN(prefix) || prefix === 'dstip') ? '' : '/' + prefix,
-                            dstip = select + dstprefix;
-                        aggregate += (aggregate === '') ? dstip : ',' + dstip;
-                    }
-                }
-            });
+        var aggregate = [];
+        var validAggregations = ['proto', 'dstport', 'srcport', 'srcip', 'dstip'];
 
-            return aggregate;
+        $.each(validAggregations, function(id, val) {
+            var control = aggregation.find('[name=' + val + ']');
+            if (control.prop('disabled'))
+                return;
+            if (val === 'srcip' || val === 'dstip') {
+                if (control.val() == 'none')
+                    return;
+                var prefix = aggregation.find('[name=' + val + 'prefix]:visible');
+                aggregate.push(control.val() + (prefix.length > 0 ? '/' + prefix.val() : ''));
+            } else if (control.prop('checked'))
+                aggregate.push(val);
+        });
 
-        } else return 'bidirectional';
+        return aggregate.join(',');
     }
 
     /**
@@ -921,17 +919,15 @@ $(document).ready(function() {
     /**
      * block not available options on "bi-direction" checked
      */
-    $(document).on('change', '#filterAggregationGlobal input[name=bidirectional]', function() {
+    $(document).on('change', '#filterAggregation input[name=bidirectional]', function() {
         var $filterAggregation = $('#filterAggregation');
 
         // if "bi-directional" is checked, block (disable) all other aggregation options
-        if ($(this).parent().hasClass('active')) {
+        if ($(this).prop('checked')) {
 
             $filterAggregation.find('[data-disable-on="bi-directional"]').each(function() {
                 $(this).parent().removeClass('active').addClass('disabled');
                 $(this).prop('disabled', true);
-                if ($(this).prop('tagName') === 'SELECT') $(this).prop('selectedIndex', 0);
-                else $(this).val('');
             });
 
         } else {
