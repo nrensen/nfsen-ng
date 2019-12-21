@@ -89,8 +89,14 @@ $(document).ready(function() {
         $content.each(showDivs);
 
         // re-initialize form
-        if (view === 'graphs') $('#filterDisplaySelect').trigger('change');
-        if (view === 'flows') $('#statsFilterForSelection').val('record').trigger('change');
+        if (view === 'graphs')
+            $('#filterDisplaySelect').trigger('change');
+        if (view === 'flows') {
+            $('#filterOutputSelection').prop('disabled', false).toggleClass('disabled', false);
+            $('#customListOutputFormatValue').prop('disabled', false).toggleClass('disabled', false);
+        }
+        if (view === 'statistics')
+            $('#statsFilterForSelection').trigger('change');
 
         // trigger resize for the graph
         if (typeof dygraph !== 'undefined') dygraph.resize();
@@ -281,6 +287,7 @@ $(document).ready(function() {
         });
 
         $('#filterOutputSelection').prop('disabled', disabled).toggleClass('disabled', disabled);
+        $('#customListOutputFormatValue').prop('disabled', disabled).toggleClass('disabled', disabled);
     });
 
     /**
