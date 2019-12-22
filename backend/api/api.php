@@ -149,6 +149,7 @@ class API {
      * @param string $filter
      * @param int    $top
      * @param string $for
+     * @param string $aggregate
      * @param string $limit
      * @param array  $output
      *
@@ -161,6 +162,7 @@ class API {
         string $filter,
         int $top,
         string $for,
+        string $aggregate,
         string $limit,
         array $output = array()
     ) {
@@ -181,6 +183,10 @@ class API {
         $processor->setOption('-s', $for);
         if (!empty($limit)) $processor->setOption('-l', $limit); // todo -L for traffic, -l for packets
         if (isset($output['IPv6'])) $processor->setOption('-6', null);
+        if ($aggregate === 'bidirectional')
+            $processor->setOption('-B', null);
+        elseif (!empty($aggregate))
+            $processor->setOption('-A', $aggregate);
         $processor->setFilter($filter);
         
         try {
@@ -216,12 +222,7 @@ class API {
         string $sort,
         array $output
     ) {
-        $aggregate_command = "";
-        // nfdump -M /srv/nfsen/profiles-data/live/tiber:n048:gate:swibi:n055:swi6  -T  -r 2017/04/10/nfcapd.201704101150 -c 20
         $sources = implode(':', $sources);
-        if (!empty($aggregate))
-            $aggregate_command = ($aggregate === 'bidirectional') ? '-B' : '-A' . $aggregate; // no space inbetween
-        
         
         $processor = new Config::$processorClass();
         $processor->setOption('-M', $sources); // multiple sources
@@ -234,7 +235,10 @@ class API {
         
         if (!empty($sort)) $processor->setOption('-O', 'tstart');
         if (array_key_exists('IPv6', $output)) $processor->setOption('-6', $output['IPv6']);
-        if (!empty($aggregate_command)) $processor->setOption('-a', $aggregate_command);
+        if ($aggregate === 'bidirectional')
+            $processor->setOption('-B', null);
+        elseif (!empty($aggregate))
+            $processor->setOption('-A', $aggregate);
         $processor->setFilter($filter);
         
         try {
