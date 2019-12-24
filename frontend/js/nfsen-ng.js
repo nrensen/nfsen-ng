@@ -298,7 +298,7 @@ $(document).ready(function() {
      * Process flows/statistics form submission
      */
     $(document).on('click', '#filterCommands .submit', function() {
-        var current_view = $(this).attr('data-view'),
+        var current_view = $('header').find('li.active a').attr('data-view'),
             do_continue = true,
             date_diff = date_range.options.to-date_range.options.from,
             count_sources = $('#filterSourcesSelect').val().length;
@@ -727,9 +727,11 @@ $(document).ready(function() {
 
         if (typeof sources === 'string') sources = [sources];
 
-        if ($('#flowsFilterOther').find('[name=ordertstart]:checked').length > 0) {
-            sort = $('[name=ordertstart]:checked').val();
-        }
+        if ($('#ordertstart:checked').length > 0)
+            sort = 'tstart';
+
+        if ($('#ipv6:checked').length > 0)
+            output.IPv6 = true;
 
         api_flows_options = {
             datestart: datestart,
@@ -766,6 +768,9 @@ $(document).ready(function() {
             output.format = fmt.val();
             output.custom = $('#customListOutputFormatValue').val();
         }
+
+        if ($('#ipv6:checked').length > 0)
+            output.IPv6 = true;
 
         // parse form values to generate a proper API request
         var aggregate = parse_aggregation_fields();

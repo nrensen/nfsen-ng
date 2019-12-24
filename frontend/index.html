@@ -48,10 +48,17 @@
                         <div class="btn-group" id="date_syncing" data-view="graphs">
                             <button type="button" class="btn btn-default sync-date" disabled>Copy from graph <span class="glyphicon glyphicon-repeat" aria-hidden="true"></span></button>
                         </div>
+
+                        <div id="filterCommands" class="btn-group btn-group-md" data-toggle="buttons" data-view="flows statistics">
+                            <button type="button" class="btn btn-primary submit" data-loading-text="Loading...">Process data</button>
+
+                            <button type="button" class="btn btn-success csv">Get CSV</button>
+
+                            <button type="button" class="btn btn-default reset">Reset filters</button>
+                        </div>
                     </div>
 
-
-                    <div id="filterDisplay" class="hidden col-xs-6 col-sm-2" data-view="graphs">
+                    <div id="filterDisplay" class="hidden col-xs-7 col-sm-2" data-view="graphs">
                         <h3>Display</h3>
 
                         <div class="form-group">
@@ -103,36 +110,6 @@
                         </div>
                     </div>
 
-                    <div id="filterFlowsLimit" class="hidden col-xs-6 col-sm-2 col-md-2 col-lg-1" data-view="flows">
-                        <h3>Limit Flows</h3>
-
-                        <div class="form-group">
-                            <select id="flowsFilterLimitSelection" class="form-control">
-                                <option value="20">20</option>
-                                <option value="50" >50</option>
-                                <option value="100" >100</option>
-                                <option value="500" >500</option>
-                                <option value="1000" >1000</option>
-                                <option value="10000" >10000</option>
-                            </select>
-                        </div>
-                    </div>
-
-                    <div id="filterStatisticsTop" class="hidden col-xs-6 col-sm-2 col-md-2 col-lg-1" data-view="statistics">
-                        <h3>Top records</h3>
-                        <div class="form-group">
-                            <select id="statsFilterTopSelection" class="form-control">
-                                <option value="10" selected>10</option>
-                                <option value="20">20</option>
-                                <option value="50">50</option>
-                                <option value="100">100</option>
-                                <option value="200">200</option>
-                                <option value="500">500</option>
-                            </select>
-                        </div>
-                    </div>
-
-
                     <div id="filterNfdump" class="hidden col-xs-12 col-sm-7 col-md-5" data-view="flows statistics">
 
                         <h3>NFDUMP filter <span class="glyphicon glyphicon-info-sign" aria-hidden="true" data-toggle="tooltip" data-placement="right" title="The filter syntax is similar to the well known pcap library used by tcpdump. All keywords are case-independent. Example: dst port 80"></span></h3>
@@ -164,23 +141,23 @@
                     <div id="filterAggregation" class="hidden col-xs-6 col-sm-6 col-md-3 col-lg-2" data-view="flows statistics">
 
                         <h3>Aggregation</h3><!-- todo: check everywhere this "name" convention in divs and other elements-->
-                        <div class="row">
+                        <div>
                             <label><input type="checkbox" name="bidirectional">Bidirectional</label>
                         </div>
-                        <div class="row">
+                        <div>
                             <label><input data-disable-on="bi-directional" type="checkbox" name="proto">Protocol</label>
                         </div>
-                        <div class="row">
+                        <div>
                             <label><input data-disable-on="bi-directional" type="checkbox" name="srcport">Source port</label>
                         </div>
-                        <div class="row">
+                        <div>
                             <label><input data-disable-on="bi-directional" type="checkbox" name="dstport">Destination port</label>
                         </div>
 
-                        <div class="row">
-                            <label>Source IP</label><br>
+                        <div>
+                            <label>Source IP</label>
                             <div class="form-group">
-                                <select data-disable-on="bi-directional" data-kind="source" name="srcip" id="filterFlowAggregationSourceAddressSelect" class="form-control pull-left" style="width: 70%">
+                                <select data-disable-on="bi-directional" data-kind="source" name="srcip" id="filterFlowAggregationSourceAddressSelect" class="form-control pull-left">
                                     <option value="none">No aggregation</option>
                                     <option value="srcip">IP</option>
                                     <option value="srcip4">IPv4 subnets</option>
@@ -192,10 +169,10 @@
                             </div>
                         </div>
 
-                        <div class="row">
+                        <div>
                             <label>Destination IP</label>
                             <div class="form-group">
-                                <select data-disable-on="bi-directional" data-kind="destination" name="dstip" id="filterFlowAggregationDestinationAddressSelect" class="form-control pull-left" style="width: 70%">
+                                <select data-disable-on="bi-directional" data-kind="destination" name="dstip" id="filterFlowAggregationDestinationAddressSelect" class="form-control pull-left">
                                     <option value="none">No aggregation</option>
                                     <option value="dstip">IP</option>
                                     <option value="dstip4">IPv4 subnets</option>
@@ -207,7 +184,7 @@
                             </div>
                         </div>
                     </div>
-
+<!--
                     <div id="statsLimitDiv" class="hidden col-xs-6 col-sm-6 col-md-2" data-view="statistics">
                         <h3>Data Limit</h3>
                         <div class="form-group">
@@ -218,6 +195,54 @@
                             </select>
                         </div>
                     </div>
+-->
+                    <div id="filterOutput" class="hidden col-xs-6 col-sm-6 col-md-4 col-lg-3" data-view="flows statistics">
+
+                        <h3>Output</h3>
+                        <div class="form-group" data-view="flows">
+                            <label>Limit Flows</label>
+                            <select id="flowsFilterLimitSelection" class="form-control">
+                                <option value="20">20</option>
+                                <option value="50" >50</option>
+                                <option value="100" >100</option>
+                                <option value="500" >500</option>
+                                <option value="1000" >1000</option>
+                                <option value="10000" >10000</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group" data-view="statistics">
+                            <label>Top Records</label>
+                            <select id="statsFilterTopSelection" class="form-control">
+                                <option value="10" selected>10</option>
+                                <option value="20">20</option>
+                                <option value="50">50</option>
+                                <option value="100">100</option>
+                                <option value="200">200</option>
+                                <option value="500">500</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="filterOutputSelection">Output type</label>
+                            <select id="filterOutputSelection" name="filterOutputSelection" class="form-control">
+                                <option value="line">Line</option>
+                                <option value="long">Long</option>
+                                <option value="extended">Extended</option>
+                                <option value="custom">Custom</option>
+                            </select>
+                        </div>
+                        <div id="customListOutputFormat" class="form-group hidden">
+                            <label for="customListOutputFormatValue">Custom output format <span class="glyphicon glyphicon-info-sign" aria-hidden="true" data-toggle="tooltip" data-placement="right" title="Specify output format in nfdump-style. E.g. %ts %tr %pr"></span></label>
+                            <input id="customListOutputFormatValue" type="text" class="form-control">
+                        </div>
+                        <div>
+                            <label data-view="flows"><input type="checkbox" id="ordertstart" value="true">Order by tstart</label>
+                        </div>
+                        <div>
+                            <label><input type="checkbox" id="ipv6" value="true">Full IPv6 address</label>
+                        </div>
+                    </div><!-- filterOutputDiv -->
 
                     <div id="filterStatsProperties" class="hidden col-xs-6 col-sm-6 col-md-4 col-lg-2" data-view="statistics">
 
@@ -286,50 +311,9 @@
                             </select>
                         </div>
 
-                    </div><!-- statsFilterPropertiesDiv  -->
+                    </div><!-- filterStatsPropertiesDiv  -->
 
-                    <div id="filterOutput" class="hidden col-xs-12 col-sm-6 col-md-4 col-lg-3" data-view="flows statistics">
-
-                        <h3>Output</h3>
-                        <div class="row">
-                            <div class="form-group col-xs-6 col-sm-6">
-                                <label for="filterOutputSelection">Output type</label>
-                                <select id="filterOutputSelection" name="filterOutputSelection" class="form-control">
-                                    <option value="line">Line</option>
-                                    <option value="long">Long</option>
-                                    <option value="extended">Extended</option>
-                                    <option value="custom">Custom</option>
-                                </select>
-                            </div>
-
-                            <div class="form-group col-xs-6 col-sm-6">
-                                <label>Other options</label>
-                                <br>
-                                <div class="btn-group btn-group-md" id="flowsFilterOther" data-toggle="buttons">
-                                    <label class="btn btn-default" data-view="flows"><input type="checkbox" name="ordertstart" value="true">Order by tstart</label>
-                                    <label class="btn btn-default"><input type="checkbox" name="ipv6" value="true">Full IPv6 address</label>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div id="customListOutputFormat" class="form-group hidden">
-                            <label for="customListOutputFormatValue">Custom output format <span class="glyphicon glyphicon-info-sign" aria-hidden="true" data-toggle="tooltip" data-placement="right" title="Specify output format in nfdump-style. E.g. %ts %tr %pr"></span></label>
-                            <input id="customListOutputFormatValue" type="text" class="form-control">
-                        </div>
-                    </div>
-
-                    <div id="filterCommands" class="hidden col-xs-12 col-sm-6 col-md-3" data-view="flows statistics">
-                        <h3>Commands</h3>
-                        <div class="btn-group btn-group-md" data-toggle="buttons">
-                            <button type="button" class="btn btn-primary submit" data-view="flows" data-loading-text="Loading...">Process data</button>
-                            <button type="button" class="btn btn-primary submit" data-view="statistics" data-loading-text="Loading...">Process data</button>
-
-                            <button type="button" class="btn btn-success csv">Get CSV</button>
-
-                            <button type="button" class="btn btn-default reset">Reset filters</button>
-                        </div>
-                    </div>
-                </div><!-- statsFilterDiv  -->
+                </div><!-- filterDiv  -->
             </form>
 
         </div><!-- filterDiv  -->
